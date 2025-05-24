@@ -18,6 +18,7 @@
     "vite": "^6.3.5"
   },
   "dependencies": {
+    "@tabler/icons-svelte": "^3.33.0",
     "bulma": "^1.0.4",
     "sass": "^1.89.0"
   }

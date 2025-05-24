@@ -1,47 +1,80 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
+  import IconCode from "@tabler/icons-svelte/icons/code";
+  import IconSparkles from "@tabler/icons-svelte/icons/sparkles";
 </script>
 
-<main>
-  <div>
-    <a href="https://vite.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
+
+{#snippet breaks(length: number)}
+  {#each {length}}
+    <br>
+  {/each}
+{/snippet}
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="columns is-centered">
+      <div class="column is-7">
+
+        <!--* First Section: About the product -->
+        <div class="content">
+          <h1 id="text">LogScribe AI</h1>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur quas quae debitis eos quibusdam eaque veritatis dignissimos doloremque laudantium natus!
+          </p>
+          <button class="button is-small is-link is-ghost"><span class="icon is-small"><IconCode /></span></button>
+        </div>
+
+        {@render breaks(1)}
+
+        <!--* Second section: User input-->
+        <div class="box p-5">
+            <div class="columns is-multiline">
+              <div class="column is-11">
+                <label for="businessName" class='help'>Business name</label>
+                <input type="text" class="input" id='businessName' placeholder="Business name">
+              </div>
+              <div class="column is-11">
+                <label for="projectName" class='help'>Project name</label>
+                <input type="text" class="input" id='projectName' placeholder="Project name">
+              </div>
+              <div class="column is-11">
+                <label for="projectName" class='help'>Additional context</label>
+                <textarea name="" id="" class="textarea" placeholder="Additional context"></textarea>
+              </div>
+            </div>
+            <div class="buttons">
+              <button class="button is-primary"><span>Generate</span> <span class="icon is-small"><IconSparkles/></span></button>
+              <button class="button">Clear</button>
+            </div>
+        </div>
+
+        {@render breaks(2)}
+        <!--* Third section: Response  -->
+        <div class="box p-6">
+            {#each [1,2,3,4,5] as i}
+              <div class="content">
+                <h4>Day {i}</h4>
+                <p class="skeleton-block">Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio veniam ratione ad eos dolorem vitae, iure excepturi dolores culpa non!</p>
+              </div>
+
+              {#if i != 5}
+              <hr>
+              {/if}
+            {/each}
+        </div>
+      </div>
+    </div>
   </div>
-  <h1>Vite + Svelte</h1>
-
-  <div class="card">
-    <Counter />
-  </div>
-
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
-</main>
+</section>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
+  * {
+    font-family: "Hanken Grotesk";
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-  .read-the-docs {
-    color: #888;
+
+  #text {
+    color: transparent;
+    background: linear-gradient(to right in oklch, teal, darkorange);
+    background-clip: text;
   }
 </style>
