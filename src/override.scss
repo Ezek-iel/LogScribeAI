@@ -1,0 +1,12 @@
+// Set your brand colors
+$pink: #f72585;
+
+// Path to Bulma's sass folder
+@use "bulma/sass" with (
+  $family-primary: '"Ubuntu Sans", system-ui',
+  $primary: $pink,
+  $link: $pink
+);
+
+// Import the Google Font
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Sans:ital,wght@0,100..800;1,100..800&display=swap');
