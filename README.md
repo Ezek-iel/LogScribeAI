@@ -1,47 +1,190 @@
-# Svelte + TS + Vite
+# LogScribe AI
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+![LogScribe AI](public/vite.svg)
 
-## Recommended IDE Setup
+LogScribe AI is an intelligent web application designed to assist university students with their Student Industrial Work Experience Scheme (SIWES) logbook reporting during internships. The application leverages Google's Generative AI (Gemini) to automatically generate realistic daily logbook entries based on your internship details.
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+## 🚀 Features
 
-## Need an official Svelte framework?
+- **AI-Powered Generation**: Uses Google Gemini 2.0 Flash model to generate authentic logbook entries
+- **Smart Context Awareness**: Takes into account business type, project details, and student department
+- **Structured Output**: Generates properly formatted 5-day weekly entries following standard workweek format
+- **History Management**: Saves and retrieves previous form states and generated responses
+- **Modal Display**: View historical entries in an elegant modal interface
+- **Markdown Support**: Renders generated content with proper formatting
+- **Real-time Validation**: Form validation to ensure all required fields are completed
+- **Loading States**: Visual feedback during AI content generation
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+## 🛠️ Technology Stack
 
-## Technical considerations
+- **Frontend**: Svelte 5 with TypeScript
+- **Styling**: Bulma CSS Framework with custom SCSS
+- **AI Integration**: Google Generative AI (@google/genai)
+- **Build Tool**: Vite
+- **Package Manager**: pnpm
+- **Icons**: Tabler Icons for Svelte
+- **Markdown**: markdown-it parser
 
-**Why use this over SvelteKit?**
+## 📋 Prerequisites
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+- Node.js (v18 or higher)
+- pnpm package manager
+- Google Gemini API key
 
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+## 🔧 Installation
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Ezek-iel/LogScribeAI.git
+   cd LogScribeAI
+   ```
 
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
 
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
+3. **Environment Setup**
+   Create a `.env` file in the root directory and add your Google Gemini API key:
+   ```env
+   VITE_GEMINI_API_KEY=your_gemini_api_key_here
+   ```
 
-**Why include `.vscode/extensions.json`?**
+4. **Start the development server**
+   ```bash
+   pnpm dev
+   ```
 
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
+5. **Open your browser**
+   Navigate to `http://localhost:5173`
 
-**Why enable `allowJs` in the TS template?**
+## 📖 Usage
 
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
+1. **Fill in the Form**:
+   - **Business Name**: Enter the name of your internship organization
+   - **Project Name**: Describe the project you're working on
+   - **Student Department**: Your academic department (e.g., Computer Science, Civil Engineering)
+   - **Additional Context**: Provide extra details about the business, project week, or specific tasks
 
-**Why is HMR not preserving my local component state?**
+2. **Generate Entries**:
+   - Click the "Generate" button to create AI-powered logbook entries
+   - Wait for the AI to process your information (usually 2-3 seconds)
 
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
+3. **Review Results**:
+   - Generated entries will appear in a structured format
+   - Each entry includes day, date, and detailed activities
+   - Content is properly formatted with markdown support
 
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
+4. **History Management**:
+   - Previous generations are automatically saved to localStorage
+   - Access historical entries through the modal interface
 
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+## 🏗️ Project Structure
+
 ```
+LogScribeAI/
+├── src/
+│   ├── App.svelte          # Main application component
+│   ├── Modal.svelte        # History display modal
+│   ├── History.svelte      # History management component
+│   ├── utils.ts            # Core utility functions (AI, parsing, storage)
+│   ├── prompt.ts           # AI prompt templates and examples
+│   ├── app.css             # Global styles
+│   ├── override.scss       # Bulma customizations
+│   └── main.ts             # Application entry point
+├── files/                  # PDF logbook templates
+├── public/                 # Static assets
+├── package.json            # Project dependencies
+├── vite.config.ts          # Vite configuration
+├── svelte.config.js        # Svelte configuration
+└── tsconfig.json           # TypeScript configuration
+```
+
+## 🤖 AI Configuration
+
+The application uses Google's Gemini 2.0 Flash model with:
+- **Response Format**: Structured JSON output
+- **System Instructions**: Comprehensive prompts with real-world examples
+- **Response Schema**: Validated structure for consistent outputs
+- **Context Examples**: Multiple industry scenarios (tech, engineering, cybersecurity)
+
+## 💾 Data Management
+
+- **Local Storage**: Form states and history are saved locally
+- **Form State Persistence**: Automatically saves current form data
+- **History Tracking**: Maintains a complete record of generated entries
+- **Data Retrieval**: Easy access to previous sessions and responses
+
+## 🎨 UI/UX Features
+
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
+- **Loading Indicators**: Visual feedback during AI processing
+- **Form Validation**: Real-time validation with clear error states
+- **Skeleton Loading**: Placeholder content during generation
+- **Modal Interface**: Clean display for historical entries
+- **Bulma Integration**: Professional styling with consistent design system
+
+## 🔒 Security Considerations
+
+- API keys are handled through environment variables
+- No sensitive data is transmitted to external servers (except Google AI)
+- Local storage is used for data persistence
+- Form validation prevents malicious input
+
+## 📚 Example Output
+
+```json
+{
+  "entries": [
+    {
+      "day": "Monday",
+      "date": "2025-01-15",
+      "activities": "* Attended morning briefing on project requirements\n* Set up development environment\n* Reviewed existing codebase and documentation"
+    },
+    {
+      "day": "Tuesday", 
+      "date": "2025-01-16",
+      "activities": "* Implemented user authentication module\n* Conducted code review with senior developer\n* Updated project documentation"
+    }
+  ]
+}
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Google Generative AI for powering the intelligent content generation
+- Svelte team for the excellent framework
+- Bulma CSS for the clean styling system
+- The open-source community for various dependencies
+
+## 📞 Support
+
+If you encounter any issues or have questions:
+- Open an issue on GitHub
+- Check the documentation
+- Review existing issues for solutions
+
+## 🔮 Future Enhancements
+
+- [ ] PDF export functionality
+- [ ] Multiple week generation
+- [ ] Custom templates
+- [ ] Collaboration features
+- [ ] Advanced AI prompting
+- [ ] Integration with academic systems
+
+---
+
+**Made with ❤️ for SIWES students everywhere**

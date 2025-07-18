@@ -20,8 +20,9 @@
     "vite": "^6.3.5"
   },
   "dependencies": {
+    "@floating-ui/dom": "^1.7.2",
     "@google/genai": "^1.0.1",
-    "@tabler/icons-svelte": "^3.33.0",
+    "@iconify/svelte": "^5.0.0",
     "bulma": "^1.0.4",
     "markdown-it": "^14.1.0",
     "sass": "^1.89.0"

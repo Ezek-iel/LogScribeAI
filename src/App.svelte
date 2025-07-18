@@ -1,23 +1,39 @@
 <script lang="ts">
-  import IconCode from "@tabler/icons-svelte/icons/code";
-  import IconSparkles from "@tabler/icons-svelte/icons/sparkles";
-  import IconAlertTriangle from "@tabler/icons-svelte/icons/alert-triangle"
-  import { generateContent, parse } from "./utils";
+  import Icon from "@iconify/svelte";
+  import {
+    addToHistory,
+    generateContent,
+    loadCurrentFormState,
+    parse,
+    saveCurrentFormState,
+  } from "./utils";
+  import History from "./History.svelte";
 
+  const currentFormState = loadCurrentFormState();
 
-  let businessName = $state("");
-  let projectName = $state("");
-  let additionalContext = $state("");
-  let studentDepartment = $state("");
+  let businessName = $state(currentFormState?.businessName || "");
+  let projectName = $state(currentFormState?.projectName || "");
+  let additionalContext = $state(currentFormState?.additionalContext || "");
+  let studentDepartment = $state(currentFormState?.studentDepartment || "");
 
-  let isLoading = $state(false); 
-  $inspect(isLoading);
+  let isLoading = $state(false);
 
   let response: Promise<string | undefined> = $state() as Promise<
     string | undefined
   >;
 
-  function clear(){
+  function extractActivities(response: string): string {
+    const data = JSON.parse(response).entries;
+    const result: string[] = [];
+
+    data.forEach((entry: any) => {
+      result.push(entry.activities);
+    });
+
+    return JSON.stringify(result);
+  }
+
+  function clear() {
     businessName = "";
     projectName = "";
     additionalContext = "";
@@ -25,7 +41,7 @@
   }
 
   function onclick() {
-    isLoading = true
+    isLoading = true;
 
     response = generateContent(
       JSON.stringify({
@@ -35,11 +51,41 @@
         studentDepartment,
       }),
     );
-    setTimeout(() => {isLoading = false}, 2000)
+
+    //* On successful retrieval of response, save the form state and add to history
+    response
+      .then((data) => {
+        if (data) {
+          saveCurrentFormState({
+            businessName,
+            projectName,
+            additionalContext,
+            studentDepartment,
+            response: extractActivities(data),
+          });
+
+          addToHistory({
+            businessName,
+            projectName,
+            additionalContext,
+            studentDepartment,
+            response: extractActivities(data),
+          });
+        }
+        isLoading = false;
+      })
+      .catch(() => {
+        isLoading = false;
+      });
   }
 
   function validate() {
-    return Boolean(businessName) && Boolean(projectName) && Boolean(additionalContext) && Boolean(studentDepartment)
+    return (
+      Boolean(businessName) &&
+      Boolean(projectName) &&
+      Boolean(additionalContext) &&
+      Boolean(studentDepartment)
+    );
   }
 </script>
 
@@ -55,15 +101,24 @@
       <div class="column is-5-desktop is-9-tablet">
         <!--* First Section: About the product -->
         <div class="content">
-          <h1 id="text">LogScribe AI</h1>
+          <div class="is-flex is-justify-content-space-between mb-3">
+            <h1 id="text" class="text-center">LogScribe AI</h1>
+            <History />
+          </div>
           <p>
             LogScribe AI is designed to assist you with your logbook reporting
             during your internship. It helps you generate daily entries based on
             your project and tasks, making the process faster and more
             efficient.
           </p>
-          <a class="button is-small is-link is-ghost" href="https://github.com/Ezek-iel/LogScribeAI" target="_blank"
-            ><span class="icon is-small"><IconCode /></span> <span class="icon-text">Github</span></a
+          <a
+            class="button is-small is-link is-ghost"
+            href="https://github.com/Ezek-iel/LogScribeAI"
+            target="_blank"
+            ><span class="icon is-small"
+              ><Icon icon="tabler:code" class="is-size-1" /></span
+            >
+            <span class="icon-text mr-2">Github</span></a
           >
         </div>
 
@@ -71,9 +126,17 @@
 
         <!--* Second section: User input-->
         <div class="box p-5">
-          <div class="notification has-background-warning-90 is-flex is-align-items-center is-gap-2">
-            <IconAlertTriangle class="has-text-warning-30"/>
-            <p class="has-text-warning-20">AI may be wrong and has errors. To improve accuracy, provide more context</p>
+          <div
+            class="notification has-background-warning-90 is-flex is-align-items-center is-gap-2"
+          >
+            <Icon
+              icon="tabler:alert-triangle"
+              class="has-text-warning-30 is-size-5"
+            />
+            <p class="has-text-warning-20">
+              AI may be wrong and has errors. To improve accuracy, provide more
+              context
+            </p>
           </div>
           <div class="columns is-multiline">
             <div class="column is-9">
@@ -120,9 +183,14 @@
             </div>
           </div>
           <div class="buttons">
-            <button class="button is-primary {isLoading ? "is-loading" : ""}" {onclick}
-              disabled={isLoading || !validate()}><span>Generate</span>
-              <span class="icon is-small"><IconSparkles /></span></button
+            <button
+              class="button is-primary {isLoading ? 'is-loading' : ''}"
+              {onclick}
+              disabled={isLoading || !validate()}
+              ><span>Generate</span>
+              <span class="icon is-small"
+                ><Icon icon="tabler:sparkles" class="is-size-1" /></span
+              ></button
             >
             <button class="button" onclick={clear}>Clear</button>
           </div>
@@ -135,7 +203,7 @@
             {#each [1, 2, 3, 4, 5] as i}
               <div class="content">
                 <h4>Day {i}</h4>
-                <p class="skeleton-block">
+                <p class="skeleton-block" style:user-select="none">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio
                   veniam ratione ad eos dolorem vitae, iure excepturi dolores
                   culpa non!
@@ -151,19 +219,19 @@
               {@const entries = JSON.parse(data)["entries"]}.
               {#each entries as entry, index (index)}
                 <div class="content">
-                  <h4> Day {index + 1} </h4>
+                  <h4>Day {index + 1}</h4>
                   <p>{@html parse(entry.activities)}</p>
                 </div>
 
-                 {#if index + 1 != 5}
-                <hr />
-              {/if}
-                {/each}
+                {#if index + 1 != 5}
+                  <hr />
+                {/if}
+              {/each}
             {/if}
           {:catch error}
-          <div class="notification is-danger">
+            <div class="notification is-danger">
               <p>An error occurred: {error}</p>
-          </div>
+            </div>
           {/await}
         </div>
       </div>
